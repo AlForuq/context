@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import Body from "./Body";
+import { Navbar } from "./Navbar";
+import { GeneralUseContext } from "./context";
+import { ThemeProvider, createGlobalStyle } from "styled-components";
 
 function App() {
+  console.log("app");
+
+  const { modes } = GeneralUseContext();
+  // we just import GeneralUseContext which returns useContext(StudentContext),
+  // so that we dont have to import useContext and StudentContext anymore
+
+  const [mode, setMode] = modes;
+  const onMode = () => {
+    setMode(!mode);
+  };
+
+  const Global = createGlobalStyle`
+    body{
+      background-color: ${({ theme }) => theme.bg};
+      color:${({ theme }) => theme.cl};
+    }
+  `;
+  const theme = {
+    bg: mode ? "#333" : "white",
+    cl: mode ? "white" : "#333",
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Global />
+      <button onClick={onMode}>{mode ? "White" : "Dark"}</button>
+      <Navbar />
+      <Body />
+    </ThemeProvider>
   );
 }
 
